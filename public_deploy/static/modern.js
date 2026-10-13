@@ -35,38 +35,53 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       debounceTimer = setTimeout(async () => {
+        let items = [];
         try {
           const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-          if (!res.ok) return;
-          const data = await res.json();
-          if (data && data.length > 0) {
-            dropdown.innerHTML = data.map(item => `
-              <div class="autocomplete-item" data-ticker="${item.Ticker}">
-                <div>
-                  <span class="autocomplete-ticker">${item.Ticker}</span>
-                  <span class="autocomplete-name">${item.Name || ''}</span>
-                </div>
-                <span class="autocomplete-badge">${item.Exchange || item.Country || 'STOCK'}</span>
-              </div>
-            `).join('');
-            dropdown.style.display = 'block';
-
-            // Add click listeners to items
-            dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
-              item.addEventListener('click', () => {
-                const ticker = item.getAttribute('data-ticker');
-                searchInput.value = ticker;
-                dropdown.style.display = 'none';
-                searchInput.focus();
-              });
-            });
-          } else {
-            dropdown.style.display = 'none';
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.length > 0) items = data;
           }
-        } catch (err) {
-          console.error('Search error:', err);
+        } catch (err) {}
+
+        // Immediate fallback from loaded stock database
+        if (items.length === 0 && window.STOCK_MARKET_DATABASE) {
+          const qUpper = query.toUpperCase();
+          items = Object.keys(window.STOCK_MARKET_DATABASE)
+            .filter(sym => sym.includes(qUpper) || (window.STOCK_MARKET_DATABASE[sym].name && window.STOCK_MARKET_DATABASE[sym].name.toUpperCase().includes(qUpper)))
+            .slice(0, 8)
+            .map(sym => ({
+              Ticker: sym,
+              Name: window.STOCK_MARKET_DATABASE[sym].name,
+              Exchange: window.STOCK_MARKET_DATABASE[sym].exchange
+            }));
         }
-      }, 150);
+
+        if (items && items.length > 0) {
+          dropdown.innerHTML = items.map(item => `
+            <div class="autocomplete-item" data-ticker="${item.Ticker}">
+              <div>
+                <span class="autocomplete-ticker">${item.Ticker}</span>
+                <span class="autocomplete-name">${item.Name || ''}</span>
+              </div>
+              <span class="autocomplete-badge">${item.Exchange || item.Country || 'STOCK'}</span>
+            </div>
+          `).join('');
+          dropdown.style.display = 'block';
+
+          // Add click listeners to items
+          dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+            item.addEventListener('click', () => {
+              const ticker = item.getAttribute('data-ticker');
+              searchInput.value = ticker;
+              dropdown.style.display = 'none';
+              searchInput.focus();
+            });
+          });
+        } else {
+          dropdown.style.display = 'none';
+        }
+      }, 120);
     });
 
     // Close dropdown on outside click
