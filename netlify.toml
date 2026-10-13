@@ -1,5 +1,16 @@
 [build]
   publish = "public_deploy"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/stock"
+  to = "/.netlify/functions/stock"
+  status = 200
+
+[[redirects]]
+  from = "/api/search"
+  to = "/.netlify/functions/search"
+  status = 200
 
 [[redirects]]
   from = "/dashboard"

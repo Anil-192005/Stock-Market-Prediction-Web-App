@@ -1,3 +1,5 @@
-/dashboard   /dashboard.html   200
-/about       /about.html       200
-/results     /results.html     200
+/api/stock   /.netlify/functions/stock   200
+/api/search  /.netlify/functions/search  200
+/dashboard   /dashboard.html             200
+/about       /about.html                 200
+/results     /results.html               200
