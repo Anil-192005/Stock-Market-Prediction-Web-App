@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StockPulse AI | Intelligent Stock Price Forecasting</title>
+  <meta name="description" content="Predict stock market trends using Machine Learning (ARIMA, LSTM, Linear Regression) and Sentiment Analysis.">
+  <link rel="stylesheet" href="{{ url_for('static', filename='modern.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Live Ticker Marquee -->
+  <div class="ticker-marquee">
+    <div class="ticker-track">
+      <div class="ticker-item"><span class="ticker-symbol">S&amp;P 500</span> <span class="ticker-price">5,815.20</span> <span class="ticker-change pos">+0.68%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">NASDAQ</span> <span class="ticker-price">18,342.90</span> <span class="ticker-change pos">+0.95%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">DOW</span> <span class="ticker-price">42,863.86</span> <span class="ticker-change pos">+0.33%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">AAPL</span> <span class="ticker-price">229.40</span> <span class="ticker-change pos">+1.25%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">NVDA</span> <span class="ticker-price">134.80</span> <span class="ticker-change pos">+2.40%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">TSLA</span> <span class="ticker-price">218.85</span> <span class="ticker-change neg">-1.10%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">MSFT</span> <span class="ticker-price">418.90</span> <span class="ticker-change pos">+0.45%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">BTC/USD</span> <span class="ticker-price">$65,240</span> <span class="ticker-change pos">+1.85%</span></div>
+      <!-- Duplicate for seamless infinite loop -->
+      <div class="ticker-item"><span class="ticker-symbol">S&amp;P 500</span> <span class="ticker-price">5,815.20</span> <span class="ticker-change pos">+0.68%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">NASDAQ</span> <span class="ticker-price">18,342.90</span> <span class="ticker-change pos">+0.95%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">DOW</span> <span class="ticker-price">42,863.86</span> <span class="ticker-change pos">+0.33%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">AAPL</span> <span class="ticker-price">229.40</span> <span class="ticker-change pos">+1.25%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">NVDA</span> <span class="ticker-price">134.80</span> <span class="ticker-change pos">+2.40%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">TSLA</span> <span class="ticker-price">218.85</span> <span class="ticker-change neg">-1.10%</span></div>
+    </div>
+  </div>
+
+  <!-- Header Navigation -->
+  <nav class="site-nav">
+    <div class="nav-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon-wrapper">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <span>Stock<span class="gradient-text">Pulse AI</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="/" class="nav-link active">Home</a></li>
+        <li><a href="/dashboard" class="nav-link">Live Dashboard</a></li>
+        <li><a href="/about" class="nav-link">About &amp; Models</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="status-badge">
+          <span class="status-dot"></span>
+          <span>Market AI Online</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-wrapper">
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-pill">
+        <i class="fa-solid fa-bolt"></i>
+        <span>AI-Powered Multi-Model Price Forecasting</span>
+      </div>
+
+      <h1 class="hero-title">
+        Predict Market Trends with <span class="gradient-text-primary">Deep Learning</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Harness the synergistic power of <strong>ARIMA Time-Series</strong>, <strong>4-Layer LSTM Neural Networks</strong>, and <strong>Linear Regression</strong> to forecast the next 7 days of stock performance.
+      </p>
+
+      <!-- Predict Input Card -->
+      <div class="predict-card-wrapper">
+        <div class="glass-card">
+          {% if not_found %}
+          <div style="background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; padding: 0.85rem 1.25rem; border-radius: 12px; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.75rem; font-size: 0.92rem;">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span><strong>Ticker Not Found:</strong> Unable to locate market data. Please verify the stock ticker symbol (e.g. AAPL, MSFT, TSLA).</span>
+          </div>
+          {% endif %}
+
+          <form class="stock-predict-form" action="/insertintotable" method="POST">
+            <div class="search-form-group">
+              <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-input-icon"></i>
+                <input 
+                  type="text" 
+                  name="nm" 
+                  class="stock-search-input" 
+                  placeholder="Enter Stock Ticker (e.g. AAPL, NVDA, TSLA, GOOGL)..." 
+                  autocomplete="off" 
+                  required
+                >
+                <div class="autocomplete-dropdown"></div>
+              </div>
+
+              <button type="submit" class="btn-predict">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Forecast Future</span>
+              </button>
+            </div>
+
+            <!-- Quick Chips -->
+            <div class="quick-chips-wrapper">
+              <span class="chips-label">Popular:</span>
+              <a href="#" class="ticker-chip" data-ticker="AAPL"><i class="fa-brands fa-apple"></i> AAPL</a>
+              <a href="#" class="ticker-chip" data-ticker="NVDA"><i class="fa-solid fa-microchip"></i> NVDA</a>
+              <a href="#" class="ticker-chip" data-ticker="TSLA"><i class="fa-solid fa-car"></i> TSLA</a>
+              <a href="#" class="ticker-chip" data-ticker="MSFT"><i class="fa-brands fa-microsoft"></i> MSFT</a>
+              <a href="#" class="ticker-chip" data-ticker="AMZN"><i class="fa-brands fa-amazon"></i> AMZN</a>
+              <a href="#" class="ticker-chip" data-ticker="GOOGL"><i class="fa-brands fa-google"></i> GOOGL</a>
+              <a href="#" class="ticker-chip" data-ticker="META"><i class="fa-brands fa-meta"></i> META</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section style="margin-top: 2rem;">
+      <div class="section-header">
+        <div class="section-tag">Machine Learning Architecture</div>
+        <h2 class="section-title">Tri-Model Ensemble Forecasting</h2>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon icon-purple">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <h3 class="feature-title">4-Layer LSTM Deep Neural Network</h3>
+          <p class="feature-desc">
+            Deep Recurrent Neural Network with memory gates and Dropout regularization trained on 7-day lookback sequences to capture non-linear historical price patterns.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-cyan">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h3 class="feature-title">ARIMA Econometric Time-Series</h3>
+          <p class="feature-desc">
+            Autoregressive Integrated Moving Average (6, 1, 0) modeling stationarity, auto-correlations, and seasonal differentials to model statistical trajectories.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-emerald">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+          </div>
+          <h3 class="feature-title">Ensemble Momentum &amp; Sentiment</h3>
+          <p class="feature-desc">
+            Combines multi-step Linear Regression trendlines with market sentiment indicators to deliver clear BUY or SELL signals with root-mean-square error metrics.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Multi-Step Loading Modal -->
+  <div class="predict-loading-modal">
+    <div class="predict-loading-box">
+      <div class="spinner-pulse"></div>
+      <h3 class="loading-step-text">Analyzing Stock Data</h3>
+      <p class="loading-subtext">Fetching historical market data for <span class="loading-ticker-target">STOCK</span>...</p>
+      <div class="loading-progress-bar">
+        <div class="loading-progress-fill"></div>
+      </div>
+      <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 1rem;">
+        Training Neural Network &amp; Running Time-Series Models (~10-15s)
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-text">
+        &copy; 2026 StockPulse AI. Advanced Machine Learning &amp; Time-Series Market Forecasting.
+      </div>
+      <ul class="footer-nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='modern.js') }}"></script>
+</body>
+</html>
