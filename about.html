@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About &amp; Models | StockPulse AI</title>
+  <meta name="description" content="Technical documentation and machine learning architecture for StockPulse AI.">
+  <link rel="stylesheet" href="static/modern.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Live Ticker Marquee -->
+  <div class="ticker-marquee">
+    <div class="ticker-track">
+      <div class="ticker-item"><span class="ticker-symbol">S&amp;P 500</span> <span class="ticker-price">5,815.20</span> <span class="ticker-change pos">+0.68%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">NASDAQ</span> <span class="ticker-price">18,342.90</span> <span class="ticker-change pos">+0.95%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">DOW</span> <span class="ticker-price">42,863.86</span> <span class="ticker-change pos">+0.33%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">AAPL</span> <span class="ticker-price">229.40</span> <span class="ticker-change pos">+1.25%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">NVDA</span> <span class="ticker-price">134.80</span> <span class="ticker-change pos">+2.40%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">TSLA</span> <span class="ticker-price">218.85</span> <span class="ticker-change neg">-1.10%</span></div>
+      <!-- Loop duplicate -->
+      <div class="ticker-item"><span class="ticker-symbol">S&amp;P 500</span> <span class="ticker-price">5,815.20</span> <span class="ticker-change pos">+0.68%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">NASDAQ</span> <span class="ticker-price">18,342.90</span> <span class="ticker-change pos">+0.95%</span></div>
+    </div>
+  </div>
+
+  <!-- Header Navigation -->
+  <nav class="site-nav">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon-wrapper">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <span>Stock<span class="gradient-text">Pulse AI</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="dashboard.html" class="nav-link">Live Dashboard</a></li>
+        <li><a href="about.html" class="nav-link active">About &amp; Models</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="status-badge">
+          <span class="status-dot"></span>
+          <span>Documentation</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-wrapper">
+    <section class="hero-section" style="padding-top: 1rem; padding-bottom: 2rem;">
+      <div class="hero-pill">
+        <i class="fa-solid fa-book-open"></i>
+        <span>Algorithmic Architecture &amp; Methodology</span>
+      </div>
+      <h1 class="hero-title" style="font-size: 2.8rem;">
+        How <span class="gradient-text-primary">StockPulse AI</span> Predicts the Future
+      </h1>
+      <p class="hero-subtitle">
+        Our multi-tier forecasting pipeline reconciles classical econometric models with modern deep recurrent neural networks to generate robust multi-day price targets.
+      </p>
+    </section>
+
+    <!-- Pipeline Architecture Cards -->
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon icon-purple">
+          <i class="fa-solid fa-network-wired"></i>
+        </div>
+        <h3 class="feature-title">1. Long Short-Term Memory (LSTM)</h3>
+        <p class="feature-desc">
+          Implemented using <strong>TensorFlow &amp; Keras 3</strong> with a 4-layer architecture of 50 recurrent memory cells per layer coupled with Dropout (0.10) to mitigate overfitting. The model reads sequences across a 7-day timestep window to preserve temporal memory gradients across volatile swings.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon icon-cyan">
+          <i class="fa-solid fa-calculator"></i>
+        </div>
+        <h3 class="feature-title">2. ARIMA (6, 1, 0) Model</h3>
+        <p class="feature-desc">
+          Powered by <strong>Statsmodels</strong>, ARIMA differences non-stationary historical series by parameter <code>d=1</code>, calculates autoregressive parameters <code>p=6</code>, and fits moving average residuals <code>q=0</code> to capture linear persistence and seasonal mean reversion.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon icon-emerald">
+          <i class="fa-solid fa-scale-balanced"></i>
+        </div>
+        <h3 class="feature-title">3. Multi-Step Linear Regression</h3>
+        <p class="feature-desc">
+          Trained on standardized features via <strong>Scikit-Learn</strong> StandardScaler. Maps continuous price momentum into an analytical 7-day trajectory vector to calculate expected trajectory bounds and calculate root-mean-square errors against actual closes.
+        </p>
+      </div>
+    </div>
+
+    <!-- Recommendation Rules Section -->
+    <div class="glass-card" style="margin-bottom: 3rem;">
+      <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">
+        <i class="fa-solid fa-bullseye" style="color: var(--primary-light); margin-right: 0.5rem;"></i>
+        Recommendation Engine Logic
+      </h3>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.7;">
+        The system aggregates the tomorrow forecast across all three algorithms and calculates the trajectory mean. If current closing price is below the forecasted mean and social/market sentiment polarity is positive, the system issues a <strong>BUY (RISE)</strong> signal. If price is above forecast mean or sentiment is negative, a <strong>SELL (FALL)</strong> recommendation is triggered.
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
+        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-md); padding: 1.25rem;">
+          <h4 style="color: var(--accent-emerald); font-weight: 700; margin-bottom: 0.5rem;"><i class="fa-solid fa-arrow-trend-up"></i> BUY Trigger Rules</h4>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">Current Close &lt; Forecast Mean AND Sentiment Polarity &gt; 0 indicates undervaluation and upward momentum.</p>
+        </div>
+
+        <div style="background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.25); border-radius: var(--radius-md); padding: 1.25rem;">
+          <h4 style="color: var(--accent-rose); font-weight: 700; margin-bottom: 0.5rem;"><i class="fa-solid fa-arrow-trend-down"></i> SELL Trigger Rules</h4>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">Current Close &ge; Forecast Mean OR Sentiment Polarity &le; 0 indicates peak price exhaustion and downward pullback.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Stack Grid -->
+    <div class="glass-card">
+      <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem;">
+        <i class="fa-solid fa-layer-group" style="color: var(--secondary); margin-right: 0.5rem;"></i>
+        Underlying Technologies
+      </h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; text-align: center;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); padding: 1.25rem;">
+          <i class="fa-brands fa-python" style="font-size: 2rem; color: #38bdf8; margin-bottom: 0.5rem;"></i>
+          <h4 style="font-size: 1rem; font-weight: 700;">Python 3.12</h4>
+          <p style="font-size: 0.78rem; color: var(--text-dim);">Core Computational Engine</p>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); padding: 1.25rem;">
+          <i class="fa-solid fa-cube" style="font-size: 2rem; color: #f59e0b; margin-bottom: 0.5rem;"></i>
+          <h4 style="font-size: 1rem; font-weight: 700;">TensorFlow &amp; Keras</h4>
+          <p style="font-size: 0.78rem; color: var(--text-dim);">Deep Learning LSTM</p>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); padding: 1.25rem;">
+          <i class="fa-solid fa-square-poll-vertical" style="font-size: 2rem; color: #10b981; margin-bottom: 0.5rem;"></i>
+          <h4 style="font-size: 1rem; font-weight: 700;">Statsmodels</h4>
+          <p style="font-size: 0.78rem; color: var(--text-dim);">ARIMA Time Series</p>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); padding: 1.25rem;">
+          <i class="fa-solid fa-globe" style="font-size: 2rem; color: #818cf8; margin-bottom: 0.5rem;"></i>
+          <h4 style="font-size: 1rem; font-weight: 700;">Flask</h4>
+          <p style="font-size: 0.78rem; color: var(--text-dim);">Web Application Server</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-text">
+        &copy; 2026 StockPulse AI. Advanced Machine Learning &amp; Time-Series Market Forecasting.
+      </div>
+      <ul class="footer-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="static/modern.js"></script>
+</body>
+</html>
