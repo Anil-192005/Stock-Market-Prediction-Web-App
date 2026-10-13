@@ -1,0 +1,17 @@
+[build]
+  publish = "public_deploy"
+
+[[redirects]]
+  from = "/dashboard"
+  to = "/dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/results"
+  to = "/results.html"
+  status = 200
