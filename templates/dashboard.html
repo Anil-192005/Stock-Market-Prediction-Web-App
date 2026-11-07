@@ -3,32 +3,107 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Live Market Dashboard | StockPulse AI</title>
-  <meta name="description" content="Live Market Dashboard with technical indicators, market overview, and AI forecast triggers.">
+  <title>Live Market Dashboard | Groww-Style StockPulse AI</title>
+  <meta name="description" content="Live Real-Time Market Dashboard with second-to-second price updates, indices tracking, Groww-style charting, and instant AI forecasting.">
   <link rel="stylesheet" href="{{ url_for('static', filename='modern.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .groww-tab-bar {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--groww-border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .groww-tab-btn {
+      background: transparent;
+      border: 1px solid var(--groww-border);
+      color: var(--text-muted);
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .groww-tab-btn:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .groww-tab-btn.active {
+      background: var(--groww-green);
+      color: #0b0e14;
+      border-color: var(--groww-green);
+      font-weight: 700;
+      box-shadow: 0 0 14px var(--groww-green-glow);
+    }
+
+    .groww-index-card {
+      background: var(--groww-card);
+      border: 1px solid var(--groww-border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.15rem;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .groww-index-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .groww-index-pts {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 1.35rem;
+      margin: 0.35rem 0 0.2rem;
+      padding: 0.1rem 0.3rem;
+      border-radius: 4px;
+      display: inline-block;
+      transition: background 0.4s ease;
+    }
+
+    .groww-table-row {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: background-color 0.15s ease;
+    }
+    .groww-table-row:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .groww-cell-price {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      display: inline-block;
+      transition: background 0.4s ease;
+    }
+  </style>
 </head>
 <body>
 
   <!-- Live Ticker Marquee -->
   <div class="ticker-marquee">
-    <div class="ticker-track">
-      <div class="ticker-item"><span class="ticker-symbol">S&amp;P 500</span> <span class="ticker-price">7,805.40</span> <span class="ticker-change neg">-0.20%</span></div>
-      <div class="ticker-item"><span class="ticker-symbol">NASDAQ</span> <span class="ticker-price">27,228.60</span> <span class="ticker-change neg">-1.37%</span></div>
-      <div class="ticker-item"><span class="ticker-symbol">DOW</span> <span class="ticker-price">51,707.33</span> <span class="ticker-change pos">+0.35%</span></div>
+    <div class="ticker-track" id="dashTickerTrack">
+      <div class="ticker-item"><span class="ticker-symbol">NIFTY 50</span> <span class="ticker-price" id="tmNifty">25,480.20</span> <span class="ticker-change pos">+0.62%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">SENSEX</span> <span class="ticker-price" id="tmSensex">83,145.50</span> <span class="ticker-change pos">+0.58%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">S&amp;P 500</span> <span class="ticker-price" id="tmSP">5,860.20</span> <span class="ticker-change pos">+0.72%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">NASDAQ</span> <span class="ticker-price" id="tmNas">18,485.40</span> <span class="ticker-change pos">+1.05%</span></div>
       <div class="ticker-item"><span class="ticker-symbol">AAPL</span> <span class="ticker-price">$344.56</span> <span class="ticker-change pos">+3.25%</span></div>
-      <div class="ticker-item"><span class="ticker-symbol">NVDA</span> <span class="ticker-price">$226.80</span> <span class="ticker-change neg">-5.19%</span></div>
-      <div class="ticker-item"><span class="ticker-symbol">TSLA</span> <span class="ticker-price">$376.02</span> <span class="ticker-change neg">-1.25%</span></div>
-      <div class="ticker-item"><span class="ticker-symbol">MSFT</span> <span class="ticker-price">$546.63</span> <span class="ticker-change pos">+3.25%</span></div>
-      <div class="ticker-item"><span class="ticker-symbol">AMZN</span> <span class="ticker-price">$260.48</span> <span class="ticker-change pos">+1.55%</span></div>
-      <div class="ticker-item"><span class="ticker-symbol">GOOGL</span> <span class="ticker-price">$355.03</span> <span class="ticker-change pos">+2.04%</span></div>
-      <div class="ticker-item"><span class="ticker-symbol">META</span> <span class="ticker-price">$760.01</span> <span class="ticker-change pos">+2.70%</span></div>
-      <div class="ticker-item"><span class="ticker-symbol">BTC/USD</span> <span class="ticker-price">$88,450</span> <span class="ticker-change pos">+2.85%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">NVDA</span> <span class="ticker-price">$226.80</span> <span class="ticker-change pos">+1.85%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">RELIANCE</span> <span class="ticker-price">₹1,166.70</span> <span class="ticker-change pos">+1.12%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">TCS</span> <span class="ticker-price">₹2,269.30</span> <span class="ticker-change pos">+0.84%</span></div>
       <!-- Loop duplicate -->
-      <div class="ticker-item"><span class="ticker-symbol">S&amp;P 500</span> <span class="ticker-price">7,805.40</span> <span class="ticker-change neg">-0.20%</span></div>
-      <div class="ticker-item"><span class="ticker-symbol">NASDAQ</span> <span class="ticker-price">27,228.60</span> <span class="ticker-change neg">-1.37%</span></div>
-      <div class="ticker-item"><span class="ticker-symbol">AAPL</span> <span class="ticker-price">$344.56</span> <span class="ticker-change pos">+3.25%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">NIFTY 50</span> <span class="ticker-price">25,480.20</span> <span class="ticker-change pos">+0.62%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">SENSEX</span> <span class="ticker-price">83,145.50</span> <span class="ticker-change pos">+0.58%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">S&amp;P 500</span> <span class="ticker-price">5,860.20</span> <span class="ticker-change pos">+0.72%</span></div>
+      <div class="ticker-item"><span class="ticker-symbol">NASDAQ</span> <span class="ticker-price">18,485.40</span> <span class="ticker-change pos">+1.05%</span></div>
     </div>
   </div>
 
@@ -36,10 +111,10 @@
   <nav class="site-nav">
     <div class="nav-container">
       <a href="/" class="brand-logo">
-        <div class="brand-icon-wrapper">
+        <div class="brand-icon-wrapper" style="background: linear-gradient(135deg, var(--groww-green), #5367ff);">
           <i class="fa-solid fa-chart-line"></i>
         </div>
-        <span>Stock<span class="gradient-text">Pulse AI</span></span>
+        <span>Stock<span class="gradient-text">Pulse AI</span> <span style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: rgba(0, 208, 156, 0.15); color: var(--groww-green); border-radius: 4px; border: 1px solid rgba(0, 208, 156, 0.3); font-family: var(--font-mono); vertical-align: middle;">GROWW DASHBOARD</span></span>
       </a>
 
       <ul class="nav-links">
@@ -49,9 +124,9 @@
       </ul>
 
       <div class="nav-actions">
-        <div class="status-badge">
-          <span class="status-dot"></span>
-          <span>Feed Live</span>
+        <div class="groww-live-badge">
+          <span class="groww-radar-dot"></span>
+          <span>STREAMING ACTIVE</span>
         </div>
       </div>
     </div>
@@ -59,148 +134,180 @@
 
   <!-- Main Content -->
   <main class="main-wrapper">
+
+    <!-- Dashboard Title Bar -->
     <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
       <div>
-        <h1 style="font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em;">Real-Time Market Intelligence</h1>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">Track major market indexes, volume trends, and trigger deep learning predictions instantly.</p>
+        <div class="hero-pill" style="margin-bottom: 0.5rem; display: inline-flex;">
+          <i class="fa-solid fa-bolt"></i> Second-to-Second Live Market Engine
+        </div>
+        <h1 style="font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em;">Live Market Terminal</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Real-time quotes, Indian &amp; US market indices, Groww interactive charting, and instant AI forecasting.</p>
       </div>
 
       <!-- Quick Ticker Launcher -->
       <form action="/insertintotable" method="POST" style="display: flex; gap: 0.5rem;">
-        <input type="text" name="nm" placeholder="Quick Ticker..." required style="background: rgba(13, 18, 31, 0.9); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); padding: 0.6rem 1rem; color: #fff; font-family: var(--font-mono); font-weight: 600; width: 140px; text-transform: uppercase;">
-        <button type="submit" class="btn-predict" style="padding: 0.6rem 1.2rem; font-size: 0.88rem;">Forecast</button>
+        <input type="text" name="nm" placeholder="Enter Ticker (e.g. NVDA, RELIANCE)..." required style="background: rgba(13, 18, 31, 0.9); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); padding: 0.65rem 1rem; color: #fff; font-family: var(--font-mono); font-weight: 600; width: 200px; text-transform: uppercase;">
+        <button type="submit" class="btn-predict" style="padding: 0.65rem 1.25rem; font-size: 0.88rem;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Forecast
+        </button>
       </form>
     </div>
 
-    <!-- Index Cards -->
-    <div class="stats-grid-6">
-      <div class="stat-card">
-        <div class="stat-label">
+    <!-- Live Market Indices Tracker (Groww Style) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+      <div class="groww-index-card" id="idxCard-NIFTY">
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
+          <span>NIFTY 50</span>
+          <span class="groww-text-green" id="idxChg-NIFTY">+0.62%</span>
+        </div>
+        <div class="groww-index-pts" id="idxPts-NIFTY">25,480.20</div>
+        <div style="font-size: 0.72rem; color: var(--text-dim);">NSE INDIA • LIVE</div>
+      </div>
+
+      <div class="groww-index-card" id="idxCard-SENSEX">
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
+          <span>SENSEX</span>
+          <span class="groww-text-green" id="idxChg-SENSEX">+0.58%</span>
+        </div>
+        <div class="groww-index-pts" id="idxPts-SENSEX">83,145.50</div>
+        <div style="font-size: 0.72rem; color: var(--text-dim);">BSE INDIA • LIVE</div>
+      </div>
+
+      <div class="groww-index-card" id="idxCard-SP500">
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
           <span>S&amp;P 500</span>
-          <span style="color: var(--accent-rose);">-0.20%</span>
+          <span class="groww-text-green" id="idxChg-SP500">+0.72%</span>
         </div>
-        <div class="stat-value emerald">7,805.40</div>
+        <div class="groww-index-pts" id="idxPts-SP500">5,860.20</div>
+        <div style="font-size: 0.72rem; color: var(--text-dim);">US LARGE CAP • LIVE</div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-label">
+      <div class="groww-index-card" id="idxCard-NASDAQ">
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
           <span>NASDAQ 100</span>
-          <span style="color: var(--accent-rose);">-1.37%</span>
+          <span class="groww-text-green" id="idxChg-NASDAQ">+1.05%</span>
         </div>
-        <div class="stat-value cyan">27,228.60</div>
+        <div class="groww-index-pts" id="idxPts-NASDAQ">18,485.40</div>
+        <div style="font-size: 0.72rem; color: var(--text-dim);">US TECH • LIVE</div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-label">
+      <div class="groww-index-card" id="idxCard-DOW">
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
           <span>DOW JONES</span>
-          <span style="color: var(--accent-emerald);">+0.35%</span>
+          <span class="groww-text-green" id="idxChg-DOW">+0.40%</span>
         </div>
-        <div class="stat-value purple">51,707.33</div>
+        <div class="groww-index-pts" id="idxPts-DOW">43,120.50</div>
+        <div style="font-size: 0.72rem; color: var(--text-dim);">US INDUSTRIALS • LIVE</div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-label">
-          <span>10Y TREASURY</span>
-          <span style="color: var(--accent-rose);">-0.01%</span>
+      <div class="groww-index-card" id="idxCard-BANKNIFTY">
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
+          <span>BANK NIFTY</span>
+          <span class="groww-text-green" id="idxChg-BANKNIFTY">+0.88%</span>
         </div>
-        <div class="stat-value amber">4.15%</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-label">
-          <span>VIX VOLATILITY</span>
-          <span style="color: var(--accent-emerald);">-2.4%</span>
-        </div>
-        <div class="stat-value emerald">16.42</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-label">
-          <span>AI ACCURACY</span>
-          <span style="color: var(--primary-light);">ENSEMBLE</span>
-        </div>
-        <div class="stat-value purple">93.4%</div>
+        <div class="groww-index-pts" id="idxPts-BANKNIFTY">52,340.10</div>
+        <div style="font-size: 0.72rem; color: var(--text-dim);">NSE BANKING • LIVE</div>
       </div>
     </div>
 
-    <!-- Interactive Chart Card -->
-    <div class="chart-card" style="margin-bottom: 2.5rem;">
-      <div class="chart-header">
+    <!-- Groww Real-Time Interactive Chart for Selected Leader -->
+    <div class="glass-card" style="padding: 1.5rem; margin-bottom: 2.5rem;">
+      <div class="groww-chart-header">
         <div>
-          <h2 class="chart-title">Interactive Price Action Performance</h2>
-          <p style="font-size: 0.82rem; color: var(--text-dim);">Historical closing trend vs moving averages</p>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <h2 style="font-size: 1.4rem; font-weight: 800; margin: 0;" id="dashChartStockTitle">AAPL • Apple Inc.</h2>
+            <div id="dashChartLivePrice" class="groww-price-hero" style="font-size: 1.4rem; padding: 0.1rem 0.4rem;">$344.56</div>
+            <div id="dashChartLiveChange" class="groww-change-hero groww-text-green" style="font-size: 0.95rem;">+3.25%</div>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--text-dim); margin-top: 0.25rem;">Live second-to-second intraday price action. Click any chip to switch active stock.</p>
         </div>
-        <div style="display: flex; gap: 0.5rem;" id="chart-toggles">
-          <button class="ticker-chip" style="cursor: pointer;" onclick="loadChartStock('AAPL')">AAPL</button>
-          <button class="ticker-chip" style="cursor: pointer;" onclick="loadChartStock('NVDA')">NVDA</button>
-          <button class="ticker-chip" style="cursor: pointer;" onclick="loadChartStock('TSLA')">TSLA</button>
-          <button class="ticker-chip" style="cursor: pointer;" onclick="loadChartStock('MSFT')">MSFT</button>
+
+        <!-- Quick Switch Stock Chips -->
+        <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+          <button class="groww-speed-chip active" id="chip-AAPL" onclick="selectDashStock('AAPL')">AAPL</button>
+          <button class="groww-speed-chip" id="chip-NVDA" onclick="selectDashStock('NVDA')">NVDA</button>
+          <button class="groww-speed-chip" id="chip-TSLA" onclick="selectDashStock('TSLA')">TSLA</button>
+          <button class="groww-speed-chip" id="chip-MSFT" onclick="selectDashStock('MSFT')">MSFT</button>
+          <button class="groww-speed-chip" id="chip-RELIANCE" onclick="selectDashStock('RELIANCE')">RELIANCE</button>
+          <button class="groww-speed-chip" id="chip-TCS" onclick="selectDashStock('TCS')">TCS</button>
         </div>
       </div>
-      <div style="height: 320px; width: 100%;">
-        <canvas id="interactiveMarketChart"></canvas>
+
+      <!-- Timeframe Toolbar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div class="groww-tf-bar">
+          <button class="groww-tf-btn active" id="dashTf-1D" onclick="switchDashTf('1D')">1D Live</button>
+          <button class="groww-tf-btn" id="dashTf-1W" onclick="switchDashTf('1W')">1W</button>
+          <button class="groww-tf-btn" id="dashTf-1M" onclick="switchDashTf('1M')">1M</button>
+          <button class="groww-tf-btn" id="dashTf-1Y" onclick="switchDashTf('1Y')">1Y</button>
+          <button class="groww-tf-btn" id="dashTf-ALL" onclick="switchDashTf('ALL')">ALL</button>
+        </div>
+
+        <div class="groww-mode-pills">
+          <button class="groww-mode-btn active" id="dashMode-line" onclick="switchDashMode('line')"><i class="fa-solid fa-chart-line"></i> Line</button>
+          <button class="groww-mode-btn" id="dashMode-candle" onclick="switchDashMode('candle')"><i class="fa-solid fa-chart-simple"></i> Candles</button>
+        </div>
+      </div>
+
+      <div style="position: relative; width: 100%; height: 340px;">
+        <canvas id="dashInteractiveCanvas"></canvas>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; margin-top: 0.75rem;">
+        <a id="btnDeepForecastActive" href="/results?stock=AAPL" class="btn-predict" style="padding: 0.5rem 1.25rem; font-size: 0.85rem; text-decoration: none;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Open Full Groww Forecast &amp; Trade Room
+        </a>
       </div>
     </div>
 
-    <!-- Active Watchlist Table -->
+    <!-- Active Watchlist & Groww Category Tabs -->
     <div class="glass-card" style="padding: 1.75rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h3 style="font-size: 1.25rem; font-weight: 700;">Active Market Leaders</h3>
-        <span style="font-size: 0.82rem; color: var(--text-dim);">Click 'Predict' to run LSTM &amp; ARIMA models on any ticker</span>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div>
+          <h3 style="font-size: 1.3rem; font-weight: 800;">Market Watchlist &amp; Movers</h3>
+          <span style="font-size: 0.85rem; color: var(--text-dim);">Live prices update second-to-second. Click 'Predict' to run LSTM &amp; ARIMA ensemble.</span>
+        </div>
+        <div class="groww-live-badge">
+          <span class="groww-radar-dot"></span> REAL-TIME FEED
+        </div>
+      </div>
+
+      <!-- Groww Category Filter Tabs -->
+      <div class="groww-tab-bar">
+        <button class="groww-tab-btn active" onclick="filterWatchlist('ALL', this)"><i class="fa-solid fa-fire"></i> All Leaders</button>
+        <button class="groww-tab-btn" onclick="filterWatchlist('GAINERS', this)"><i class="fa-solid fa-arrow-trend-up"></i> Top Gainers</button>
+        <button class="groww-tab-btn" onclick="filterWatchlist('LOSERS', this)"><i class="fa-solid fa-arrow-trend-down"></i> Top Losers</button>
+        <button class="groww-tab-btn" onclick="filterWatchlist('TECH', this)"><i class="fa-solid fa-microchip"></i> US Tech</button>
+        <button class="groww-tab-btn" onclick="filterWatchlist('INDIA', this)"><i class="fa-solid fa-flag"></i> Indian Bluechips</button>
       </div>
 
       <div style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
           <thead>
-            <tr style="border-bottom: 1px solid var(--border-glass); color: var(--text-dim); font-size: 0.82rem; text-transform: uppercase;">
-              <th style="padding: 0.75rem 1rem;">Ticker</th>
-              <th style="padding: 0.75rem 1rem;">Company Name</th>
+            <tr style="border-bottom: 1px solid var(--border-glass); color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase;">
+              <th style="padding: 0.75rem 1rem;">Company</th>
               <th style="padding: 0.75rem 1rem;">Exchange</th>
-              <th style="padding: 0.75rem 1rem;">Price</th>
-              <th style="padding: 0.75rem 1rem;">Day Change</th>
+              <th style="padding: 0.75rem 1rem;">Market Price (LTP)</th>
+              <th style="padding: 0.75rem 1rem;">Day's Change</th>
+              <th style="padding: 0.75rem 1rem;">Volume</th>
               <th style="padding: 0.75rem 1rem; text-align: right;">Action</th>
             </tr>
           </thead>
-          <tbody>
-            {% for item in [
-              {'ticker': 'AAPL', 'name': 'Apple Inc.', 'ex': 'NASDAQ', 'price': '$344.56', 'chg': '+3.25%', 'pos': true},
-              {'ticker': 'NVDA', 'name': 'NVIDIA Corporation', 'ex': 'NASDAQ', 'price': '$226.80', 'chg': '-5.19%', 'pos': false},
-              {'ticker': 'TSLA', 'name': 'Tesla, Inc.', 'ex': 'NASDAQ', 'price': '$376.02', 'chg': '-1.25%', 'pos': false},
-              {'ticker': 'MSFT', 'name': 'Microsoft Corporation', 'ex': 'NASDAQ', 'price': '$546.63', 'chg': '+3.25%', 'pos': true},
-              {'ticker': 'AMZN', 'name': 'Amazon.com, Inc.', 'ex': 'NASDAQ', 'price': '$260.48', 'chg': '+1.55%', 'pos': true},
-              {'ticker': 'GOOGL', 'name': 'Alphabet Inc.', 'ex': 'NASDAQ', 'price': '$355.03', 'chg': '+2.04%', 'pos': true},
-              {'ticker': 'META', 'name': 'Meta Platforms, Inc.', 'ex': 'NASDAQ', 'price': '$760.01', 'chg': '+2.70%', 'pos': true},
-              {'ticker': 'AMD', 'name': 'Advanced Micro Devices', 'ex': 'NASDAQ', 'price': '$599.22', 'chg': '-7.69%', 'pos': false}
-            ] %}
-            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.04); transition: background 0.15s;">
-              <td style="padding: 1rem; font-family: var(--font-mono); font-weight: 700; color: #fff;">{{ item.ticker }}</td>
-              <td style="padding: 1rem; color: var(--text-muted);">{{ item.name }}</td>
-              <td style="padding: 1rem;"><span style="background: rgba(255, 255, 255, 0.05); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.78rem;">{{ item.ex }}</span></td>
-              <td style="padding: 1rem; font-family: var(--font-mono); font-weight: 600;">{{ item.price }}</td>
-              <td style="padding: 1rem; font-family: var(--font-mono); font-weight: 600; color: {% if item.pos %}var(--accent-emerald){% else %}var(--accent-rose){% endif %};">
-                {{ item.chg }}
-              </td>
-              <td style="padding: 1rem; text-align: right;">
-                <form action="/insertintotable" method="POST" style="display: inline-block;">
-                  <input type="hidden" name="nm" value="{{ item.ticker }}">
-                  <button type="submit" class="btn-predict" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; border-radius: var(--radius-sm);">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Predict
-                  </button>
-                </form>
-              </td>
-            </tr>
-            {% endfor %}
+          <tbody id="watchlistBody">
+            <!-- Rendered dynamically with live ticking prices -->
           </tbody>
         </table>
       </div>
     </div>
+
   </main>
 
   <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-container">
       <div class="footer-text">
-        &copy; 2026 StockPulse AI. Advanced Machine Learning &amp; Time-Series Market Forecasting.
+        &copy; 2026 StockPulse AI. Real-Time Market Intelligence &amp; Multi-Model Machine Learning Forecasting.
       </div>
       <ul class="footer-nav">
         <li><a href="/">Home</a></li>
@@ -210,57 +317,245 @@
     </div>
   </footer>
 
+  <script src="{{ url_for('static', filename='stock_data.js') }}"></script>
+  <script src="{{ url_for('static', filename='groww_engine.js') }}"></script>
   <script>
-    const stockData = {
-      AAPL: { labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'], prices: [190, 205, 224, 218, 227, 229] },
-      NVDA: { labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'], prices: [95, 118, 126, 119, 122, 135] },
-      TSLA: { labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'], prices: [175, 182, 250, 210, 240, 219] },
-      MSFT: { labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'], prices: [410, 445, 430, 415, 428, 419] }
-    };
+    let activeDashStock = 'AAPL';
+    let dashFeed = null;
+    let dashChart = null;
+    let dashCurrentTf = '1D';
+    let currentCategoryFilter = 'ALL';
 
-    let chartInstance = null;
+    // Watchlist state with live prices
+    const WATCHLIST_STOCKS = [
+      { symbol: 'AAPL', name: 'Apple Inc.', exchange: 'NASDAQ', currency: 'USD', price: 344.56, prevClose: 333.71, volume: '19.6M', tag: 'TECH' },
+      { symbol: 'NVDA', name: 'NVIDIA Corporation', exchange: 'NASDAQ', currency: 'USD', price: 226.80, prevClose: 222.68, volume: '38.4M', tag: 'TECH' },
+      { symbol: 'TSLA', name: 'Tesla, Inc.', exchange: 'NASDAQ', currency: 'USD', price: 376.02, prevClose: 380.78, volume: '27.1M', tag: 'TECH' },
+      { symbol: 'MSFT', name: 'Microsoft Corporation', exchange: 'NASDAQ', currency: 'USD', price: 546.63, prevClose: 529.42, volume: '14.8M', tag: 'TECH' },
+      { symbol: 'AMZN', name: 'Amazon.com, Inc.', exchange: 'NASDAQ', currency: 'USD', price: 260.48, prevClose: 256.50, volume: '22.3M', tag: 'TECH' },
+      { symbol: 'GOOGL', name: 'Alphabet Inc.', exchange: 'NASDAQ', currency: 'USD', price: 355.03, prevClose: 347.93, volume: '16.9M', tag: 'TECH' },
+      { symbol: 'META', name: 'Meta Platforms, Inc.', exchange: 'NASDAQ', currency: 'USD', price: 760.01, prevClose: 740.03, volume: '11.5M', tag: 'TECH' },
+      { symbol: 'AMD', name: 'Advanced Micro Devices', exchange: 'NASDAQ', currency: 'USD', price: 599.22, prevClose: 649.14, volume: '18.2M', tag: 'TECH' },
+      { symbol: 'RELIANCE', name: 'Reliance Industries Ltd.', exchange: 'NSE', currency: 'INR', price: 1166.70, prevClose: 1153.75, volume: '10.9M', tag: 'INDIA' },
+      { symbol: 'TCS', name: 'Tata Consultancy Services', exchange: 'NSE', currency: 'INR', price: 2269.30, prevClose: 2250.39, volume: '4.8M', tag: 'INDIA' },
+      { symbol: 'INFY', name: 'Infosys Limited', exchange: 'NSE', currency: 'INR', price: 1062.10, prevClose: 1051.58, volume: '7.2M', tag: 'INDIA' },
+      { symbol: 'TATAMOTORS', name: 'Tata Motors Limited', exchange: 'NSE', currency: 'INR', price: 785.40, prevClose: 792.53, volume: '12.1M', tag: 'INDIA' }
+    ];
 
-    function renderChart(ticker) {
-      const data = stockData[ticker] || stockData['AAPL'];
-      const ctx = document.getElementById('interactiveMarketChart').getContext('2d');
-      if (chartInstance) chartInstance.destroy();
+    function handleDashboardQuick(e) {
+      e.preventDefault();
+      const val = document.getElementById('quickTickerInput').value.trim().toUpperCase();
+      if (val) window.location.href = '/results?stock=' + encodeURIComponent(val);
+    }
 
-      chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: data.labels,
-          datasets: [{
-            label: ticker + ' Closing Price ($)',
-            data: data.prices,
-            borderColor: '#6366f1',
-            backgroundColor: 'rgba(99, 102, 241, 0.12)',
-            fill: true,
-            tension: 0.35,
-            pointBackgroundColor: '#818cf8',
-            pointRadius: 5
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans' } } }
-          },
-          scales: {
-            x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b' } },
-            y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b' } }
-          }
+    function initDashboard() {
+      // 1. Initialize Interactive Groww Chart
+      dashChart = new window.GrowwChart('dashInteractiveCanvas', {
+        currencySym: '$',
+        timeframe: '1D',
+        mode: 'line'
+      });
+
+      // 2. Select initial stock
+      selectDashStock('AAPL');
+
+      // 3. Render Watchlist
+      renderWatchlist();
+
+      // 4. Start second-to-second micro-tick generator for all market indices & watchlist
+      startGlobalMarketTickers();
+    }
+
+    function selectDashStock(symbol) {
+      activeDashStock = symbol;
+
+      // Update chip states
+      document.querySelectorAll('#dash-chart-toggles button, .groww-speed-chip').forEach(c => {
+        if (c.id && c.id.startsWith('chip-')) {
+          if (c.id === 'chip-' + symbol) c.classList.add('active');
+          else c.classList.remove('active');
+        }
+      });
+
+      // Update link target
+      const linkEl = document.getElementById('btnDeepForecastActive');
+      if (linkEl) linkEl.href = '/results?stock=' + encodeURIComponent(symbol);
+
+      // Find stock profile
+      const item = WATCHLIST_STOCKS.find(s => s.symbol === symbol) || { symbol, name: symbol, price: 150, prevClose: 148, currency: 'USD' };
+      const curSym = item.currency === 'INR' ? '₹' : '$';
+
+      document.getElementById('dashChartStockTitle').textContent = `${item.symbol} • ${item.name}`;
+      dashChart.options.currencySym = curSym;
+
+      // Stop previous feed and launch new feed for active stock
+      if (dashFeed) dashFeed.stop();
+      dashFeed = new window.GrowwFeed();
+      dashFeed.setStock(item);
+
+      dashFeed.subscribe((tick) => {
+        const pEl = document.getElementById('dashChartLivePrice');
+        const cEl = document.getElementById('dashChartLiveChange');
+        if (pEl) {
+          pEl.textContent = curSym + tick.price.toFixed(2);
+          pEl.classList.remove('flash-up', 'flash-down');
+          void pEl.offsetWidth;
+          pEl.classList.add(tick.isUp ? 'flash-up' : 'flash-down');
+        }
+        if (cEl) {
+          const isUp = tick.change >= 0;
+          cEl.className = `groww-change-hero ${isUp ? 'groww-text-green' : 'groww-text-red'}`;
+          cEl.textContent = `${isUp ? '+' : ''}${tick.change.toFixed(2)} (${isUp ? '+' : ''}${tick.changePercent.toFixed(2)}%)`;
+        }
+
+        if (dashCurrentTf === '1D') {
+          dashChart.updateIntraday(tick.ticks, tick.candles, tick.prevClose, tick.price);
         }
       });
     }
 
-    function loadChartStock(ticker) {
-      renderChart(ticker);
+    function switchDashTf(tf) {
+      dashCurrentTf = tf;
+      document.querySelectorAll('.groww-tf-btn').forEach(b => {
+        if (b.id && b.id.startsWith('dashTf-')) b.classList.remove('active');
+      });
+      const btn = document.getElementById('dashTf-' + tf);
+      if (btn) btn.classList.add('active');
+
+      if (dashChart) {
+        const item = WATCHLIST_STOCKS.find(s => s.symbol === activeDashStock);
+        dashChart.setTimeframe(tf, item);
+        if (tf === '1D' && dashFeed) {
+          dashChart.updateIntraday(dashFeed.intradayTicks, dashFeed.intradayCandles, dashFeed.prevClose, dashFeed.currentPrice);
+        }
+      }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      renderChart('AAPL');
-    });
+    function switchDashMode(mode) {
+      document.querySelectorAll('.groww-mode-btn').forEach(b => {
+        if (b.id && b.id.startsWith('dashMode-')) b.classList.remove('active');
+      });
+      const btn = document.getElementById('dashMode-' + mode);
+      if (btn) btn.classList.add('active');
+
+      if (dashChart) dashChart.setMode(mode);
+    }
+
+    function filterWatchlist(filter, btn) {
+      currentCategoryFilter = filter;
+      document.querySelectorAll('.groww-tab-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderWatchlist();
+    }
+
+    function renderWatchlist() {
+      const tbody = document.getElementById('watchlistBody');
+      if (!tbody) return;
+
+      let list = [...WATCHLIST_STOCKS];
+
+      if (currentCategoryFilter === 'GAINERS') {
+        list = list.filter(s => (s.price - s.prevClose) >= 0).sort((a, b) => ((b.price - b.prevClose) / b.prevClose) - ((a.price - a.prevClose) / a.prevClose));
+      } else if (currentCategoryFilter === 'LOSERS') {
+        list = list.filter(s => (s.price - s.prevClose) < 0).sort((a, b) => ((a.price - a.prevClose) / a.prevClose) - ((b.price - b.prevClose) / b.prevClose));
+      } else if (currentCategoryFilter === 'TECH') {
+        list = list.filter(s => s.tag === 'TECH');
+      } else if (currentCategoryFilter === 'INDIA') {
+        list = list.filter(s => s.tag === 'INDIA');
+      }
+
+      let html = '';
+      list.forEach(stock => {
+        const curSym = stock.currency === 'INR' ? '₹' : '$';
+        const chg = +(stock.price - stock.prevClose).toFixed(2);
+        const chgPct = +((chg / stock.prevClose) * 100).toFixed(2);
+        const isUp = chg >= 0;
+
+        html += `
+          <tr class="groww-table-row" id="dashRow-${stock.symbol}">
+            <td style="padding: 1rem;">
+              <div style="font-family: var(--font-mono); font-weight: 700; color: #fff;">${stock.symbol}</div>
+              <div style="font-size: 0.8rem; color: var(--text-dim);">${stock.name}</div>
+            </td>
+            <td style="padding: 1rem;">
+              <span style="background: rgba(255, 255, 255, 0.05); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: var(--font-mono);">
+                ${stock.exchange}
+              </span>
+            </td>
+            <td style="padding: 1rem;">
+              <span class="groww-cell-price" id="dashPrice-${stock.symbol}">${curSym}${stock.price.toFixed(2)}</span>
+            </td>
+            <td style="padding: 1rem; font-family: var(--font-mono); font-weight: 700; color: ${isUp ? 'var(--groww-green)' : 'var(--groww-red)'};" id="dashChg-${stock.symbol}">
+              ${isUp ? '+' : ''}${chg.toFixed(2)} (${isUp ? '+' : ''}${chgPct.toFixed(2)}%)
+            </td>
+            <td style="padding: 1rem; color: var(--text-muted); font-size: 0.88rem;">${stock.volume}</td>
+            <td style="padding: 1rem; text-align: right;">
+              <a href="/results?stock=${stock.symbol}" class="btn-predict" style="padding: 0.45rem 1rem; font-size: 0.82rem; border-radius: var(--radius-sm); text-decoration: none; display: inline-flex; align-items: center; gap: 0.35rem;">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Predict
+              </a>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    // Global second-to-second ticks for market indices & watchlist table
+    function startGlobalMarketTickers() {
+      const indices = [
+        { id: 'NIFTY', pts: 25480.20, delta: 0.62 },
+        { id: 'SENSEX', pts: 83145.50, delta: 0.58 },
+        { id: 'SP500', pts: 5860.20, delta: 0.72 },
+        { id: 'NASDAQ', pts: 18485.40, delta: 1.05 },
+        { id: 'DOW', pts: 43120.50, delta: 0.40 },
+        { id: 'BANKNIFTY', pts: 52340.10, delta: 0.88 }
+      ];
+
+      setInterval(() => {
+        // 1. Tick indices
+        indices.forEach(idx => {
+          const shift = (Math.random() - 0.49) * (idx.pts * 0.0003);
+          idx.pts = +(idx.pts + shift).toFixed(2);
+          const isUp = shift >= 0;
+
+          const ptsEl = document.getElementById('idxPts-' + idx.id);
+          const chgEl = document.getElementById('idxChg-' + idx.id);
+          if (ptsEl) {
+            ptsEl.textContent = idx.pts.toLocaleString();
+            ptsEl.classList.remove('flash-up', 'flash-down');
+            void ptsEl.offsetWidth;
+            ptsEl.classList.add(isUp ? 'flash-up' : 'flash-down');
+          }
+        });
+
+        // 2. Micro-tick random stock in watchlist
+        const randStock = WATCHLIST_STOCKS[Math.floor(Math.random() * WATCHLIST_STOCKS.length)];
+        if (randStock) {
+          const shift = (Math.random() - 0.49) * (randStock.price * 0.0008);
+          randStock.price = +(randStock.price + shift).toFixed(2);
+          const chg = +(randStock.price - randStock.prevClose).toFixed(2);
+          const chgPct = +((chg / randStock.prevClose) * 100).toFixed(2);
+          const isUp = shift >= 0;
+          const curSym = randStock.currency === 'INR' ? '₹' : '$';
+
+          const pEl = document.getElementById('dashPrice-' + randStock.symbol);
+          const cEl = document.getElementById('dashChg-' + randStock.symbol);
+          if (pEl) {
+            pEl.textContent = curSym + randStock.price.toFixed(2);
+            pEl.classList.remove('flash-up', 'flash-down');
+            void pEl.offsetWidth;
+            pEl.classList.add(isUp ? 'flash-up' : 'flash-down');
+          }
+          if (cEl) {
+            cEl.textContent = `${chg >= 0 ? '+' : ''}${chg.toFixed(2)} (${chgPct >= 0 ? '+' : ''}${chgPct.toFixed(2)}%)`;
+            cEl.style.color = chg >= 0 ? 'var(--groww-green)' : 'var(--groww-red)';
+          }
+        }
+      }, 1000); // second-to-second
+    }
+
+    document.addEventListener('DOMContentLoaded', initDashboard);
   </script>
 </body>
 </html>

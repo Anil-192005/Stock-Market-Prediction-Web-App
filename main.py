@@ -27,8 +27,13 @@ from textblob import TextBlob
 import constants as ct
 from Tweet import Tweet
 import nltk
-nltk.download('punkt', quiet=True)
-nltk.download('punkt_tab', quiet=True)
+try:
+    nltk.data.find('tokenizers/punkt')
+except (LookupError, Exception):
+    try:
+        nltk.download('punkt', quiet=True)
+    except Exception:
+        pass
 
 # Ignore Warnings
 import warnings
@@ -74,6 +79,10 @@ def dashboard():
 def about():
     return render_template('about.html')
 
+@app.route('/results')
+def results():
+    return render_template('results.html')
+
 @app.route('/api/search')
 def api_search():
     q = request.args.get('q', '').strip().upper()
@@ -85,9 +94,11 @@ def api_search():
     matches = TICKER_CACHE[mask].head(8)
     return matches.to_dict(orient='records')
 
-@app.route('/insertintotable',methods = ['POST'])
+@app.route('/insertintotable',methods = ['POST', 'GET'])
 def insertintotable():
-    nm = request.form['nm']
+    nm = request.form.get('nm') or request.args.get('nm') or 'NVDA'
+    nm = str(nm).strip().upper()
+    return redirect(url_for('results', stock=nm))
 
     #**************** FUNCTIONS TO FETCH DATA ***************************
     def get_historical(quote):
