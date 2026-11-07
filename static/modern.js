@@ -75,7 +75,13 @@ document.addEventListener('DOMContentLoaded', () => {
               const ticker = item.getAttribute('data-ticker');
               searchInput.value = ticker;
               dropdown.style.display = 'none';
-              searchInput.focus();
+              if (typeof runForecast === 'function') {
+                runForecast(ticker);
+              } else if (window.location.pathname.includes('dashboard') || window.location.pathname.includes('results')) {
+                window.location.href = (window.location.pathname.endsWith('.html') ? 'results.html?stock=' : '/results?stock=') + encodeURIComponent(ticker);
+              } else {
+                searchInput.focus();
+              }
             });
           });
         } else {
